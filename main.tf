@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_db_instance" "postgresql" {
   identifier              = "dev-postgres-db"
   engine                  = "postgres"
-  engine_version          = "15.4"
+  engine_version          = "15.3"
   instance_class          = "db.t3.micro"              # Free-tier eligible (check your account)
   allocated_storage       = 20                         # Minimum for PostgreSQL
   storage_type            = "gp2"
