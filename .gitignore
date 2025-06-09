@@ -1,0 +1,26 @@
+# Terraform / OpenTofu
+*.tfstate
+*.tfstate.*
+*.backup
+*.log
+
+.terraform/
+.crash/
+.tofu/
+.tofu.lock.hcl
+terraform.tfvars
+terraform.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Local files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Secrets (optional, add if you use .env files)
+.env
+.env.*
