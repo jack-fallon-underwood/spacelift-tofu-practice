@@ -10,7 +10,7 @@ resource "aws_db_instance" "postgresql" {
   allocated_storage       = 20                         # Minimum for PostgreSQL
   storage_type            = "gp2"
 
-  name                    = "devdb"                    # Name of your DB inside the instance
+  db_name                    = "devdb"                    # Name of your DB inside the instance
   username                = "postgresadmin"
   password                = "SuperSecure123!"
   port                    = 5432
