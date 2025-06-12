@@ -2,7 +2,7 @@ provider "aws" {
   region = "us-east-2"
 }
 
-resource "aws_db_instance" "postgresql" {
+resource "aws_db_instance" "postgresql2" {
   identifier              = "dev-postgres-db"
   engine                  = "postgres"
   engine_version          = "17.4"
@@ -10,7 +10,7 @@ resource "aws_db_instance" "postgresql" {
   allocated_storage       = 20                         # Minimum for PostgreSQL
   storage_type            = "gp2"
 
-  db_name                    = "devdb2"                    # Name of your DB inside the instance
+  db_name                    = "devdb"                    # Name of your DB inside the instance
   username                = "postgresadmin"
   password                = "SuperSecure123!"
   port                    = 5432
