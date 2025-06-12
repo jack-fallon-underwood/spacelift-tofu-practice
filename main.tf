@@ -15,7 +15,7 @@ provider "aws" {
 
 # RDS PostgreSQL instance
 resource "aws_db_instance" "postgresql" {
-  identifier                = "db-xya"
+  identifier                = "db-xyb"
   engine                    = "postgres"
   engine_version            = "17.4"
   instance_class            = "db.t3.micro"
@@ -89,7 +89,7 @@ resource "aws_instance" "ubuntu" {
   instance_type          = "t3.micro"
   subnet_id              = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-  key_name               = "your-keypair"
+
 
   user_data = <<-EOF
     #!/bin/bash
