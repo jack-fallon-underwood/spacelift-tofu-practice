@@ -15,7 +15,7 @@ provider "aws" {
 
 # RDS PostgreSQL instance
 resource "aws_db_instance" "postgresql" {
-  identifier                = "db-9993"
+  identifier                = "db-X"
   engine                    = "postgres"
   engine_version            = "17.4"
   instance_class            = "db.t3.micro"
