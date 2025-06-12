@@ -18,10 +18,14 @@ data "aws_vpc" "default" {
   default = true
 }
 
-# Fetch all subnet IDs in the default VPC
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.default.id
+# Fetch all subnets in that VPC (replacement for aws_subnet_ids)
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
+
 
 # Latest Ubuntu 20.04 LTS AMI
 data "aws_ami" "ubuntu" {
@@ -86,7 +90,7 @@ resource "aws_security_group" "ec2_sg" {
 resource "aws_instance" "ubuntu" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t3.micro"
-  subnet_id                   = data.aws_subnet_ids.default.ids[0]
+  subnet_id                   = data.aws_subnet.default.ids[0]
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
   key_name                    = "your-keypair"  # <-- replace with your EC2 keypair
 
