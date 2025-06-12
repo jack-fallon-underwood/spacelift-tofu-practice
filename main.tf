@@ -2,7 +2,7 @@ provider "aws" {
   region = "us-east-2"
 }
 
-resource "aws_db_instance" "postgresql2" {
+resource "aws_db_instance" "postgresql3" {
   identifier              = "dev-postgres-db"
   engine                  = "postgres"
   engine_version          = "17.4"
@@ -25,5 +25,5 @@ resource "aws_db_instance" "postgresql2" {
 }
 
 output "rds_endpoint" {
-  value = aws_db_instance.postgresql2.endpoint
+  value = aws_db_instance.postgresql3.endpoint
 }
