@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "postgresql" {
-  identifier              = "db-9993"
+  identifier              = "db-9994"
   engine                  = "postgres"
   engine_version          = "17.4"
   instance_class          = "db.t3.micro"              # Free-tier eligible (check your account)
