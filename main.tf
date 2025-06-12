@@ -15,7 +15,7 @@ provider "aws" {
 
 # RDS PostgreSQL instance
 resource "aws_db_instance" "postgresql" {
-  identifier                = "db-xxa"
+  identifier                = "db-xya"
   engine                    = "postgres"
   engine_version            = "17.4"
   instance_class            = "db.t3.micro"
@@ -76,12 +76,11 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   egress {
-    description = "Postgres to RDS"
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = [aws_db_instance.postgresql.address]
-  }
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
 }
 
 # Ubuntu EC2 instance that writes dummy data to RDS
