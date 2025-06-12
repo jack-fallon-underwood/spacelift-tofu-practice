@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "registry.opentofu.org/hashicorp/aws"
-      version = "4.67.0"
+      version = "5.99.1"  # Match provider version recorded in state
     }
   }
 }
@@ -15,7 +15,7 @@ provider "aws" {
 
 # RDS PostgreSQL instance
 resource "aws_db_instance" "postgresql" {
-  identifier                = "db-X"
+  identifier                = "db-XA"
   engine                    = "postgres"
   engine_version            = "17.4"
   instance_class            = "db.t3.micro"
