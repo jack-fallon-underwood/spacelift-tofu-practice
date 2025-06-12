@@ -90,7 +90,7 @@ resource "aws_security_group" "ec2_sg" {
 resource "aws_instance" "ubuntu" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t3.micro"
-  subnet_id                   = data.aws_subnet.default.ids[0]
+  subnet_id                   = data.aws_subnets.default.ids[0]
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
   key_name                    = "your-keypair"  # <-- replace with your EC2 keypair
 
