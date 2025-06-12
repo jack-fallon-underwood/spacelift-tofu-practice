@@ -25,5 +25,5 @@ resource "aws_db_instance" "postgresql2" {
 }
 
 output "rds_endpoint" {
-  value = aws_db_instance.postgresql.endpoint
+  value = aws_db_instance.postgresql2.endpoint
 }
