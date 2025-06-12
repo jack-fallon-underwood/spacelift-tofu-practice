@@ -3,14 +3,14 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "postgresql" {
-  identifier = "dev-postgres-db-${random_id.suffix.hex}"
+  identifier              = "db-999"
   engine                  = "postgres"
   engine_version          = "17.4"
   instance_class          = "db.t3.micro"              # Free-tier eligible (check your account)
   allocated_storage       = 20                         # Minimum for PostgreSQL
   storage_type            = "gp2"
 
-  db_name                    = "devdb"                    # Name of your DB inside the instance
+  db_name                 = "devdb"                    # Name of your DB inside the instance
   username                = "postgresadmin"
   password                = "SuperSecure123!"
   port                    = 5432
@@ -26,8 +26,4 @@ resource "aws_db_instance" "postgresql" {
 
 output "rds_endpoint" {
   value = aws_db_instance.postgresql.endpoint
-}
-
-resource "random_id" "suffix" {
-  byte_length = 4
 }
