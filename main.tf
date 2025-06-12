@@ -2,8 +2,8 @@ provider "aws" {
   region = "us-east-2"
 }
 
-resource "aws_db_instance" "postgresql3" {
-  identifier              = "dev-postgres-db"
+resource "aws_db_instance" "postgresql" {
+  identifier = "dev-postgres-db-${random_id.suffix.hex}"
   engine                  = "postgres"
   engine_version          = "17.4"
   instance_class          = "db.t3.micro"              # Free-tier eligible (check your account)
@@ -25,5 +25,9 @@ resource "aws_db_instance" "postgresql3" {
 }
 
 output "rds_endpoint" {
-  value = aws_db_instance.postgresql3.endpoint
+  value = aws_db_instance.postgresql.endpoint
+}
+
+resource "random_id" "suffix" {
+  byte_length = 4
 }
