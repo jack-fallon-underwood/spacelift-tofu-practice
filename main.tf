@@ -1,3 +1,8 @@
+variable "home_ip" {
+  description = "Your home IP address"
+  type        = string
+}
+
 provider "aws" {
   region = "us-east-1"
 }
@@ -23,7 +28,7 @@ resource "aws_security_group" "ai_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["YOUR_HOME_IP/32"]
+   cidr_blocks = ["${var.home_ip}/32"]
   }
 
   ingress {
@@ -31,7 +36,7 @@ resource "aws_security_group" "ai_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["YOUR_HOME_IP/32"]
+    cidr_blocks = ["${var.home_ip}/32"]
   }
 
   egress {
