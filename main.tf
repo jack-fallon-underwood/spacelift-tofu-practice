@@ -76,7 +76,7 @@ resource "aws_instance" "ubuntu_bedrock_client" {
   instance_type          = "t3.micro"
   subnet_id              = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.ai_sg.id]
-  key_name               = "your-keypair"
+ 
 
   user_data = <<-EOF
     #!/bin/bash
