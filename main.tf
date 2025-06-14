@@ -15,7 +15,7 @@ provider "aws" {
 
 # RDS PostgreSQL instance
 resource "aws_db_instance" "postgresql" {
-  identifier                = "db-xyc"
+  identifier                = "db-xyd"
   engine                    = "postgres"
   engine_version            = "17.4"
   instance_class            = "db.t3.micro"
@@ -63,7 +63,7 @@ data "aws_ami" "ubuntu" {
 
 # Security group for EC2 to access RDS and SSH
 resource "aws_security_group" "ec2_sg" {
-  name        = "allow_postgres_access"
+  name        = "allow_postgres_accessXYD"
   description = "Allow SSH inbound and Postgres outbound"
   vpc_id      = data.aws_vpc.default.id
 
