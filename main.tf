@@ -1,45 +1,10 @@
+variable "home_ip" {
+  description = "Your home IP address"
+  type        = string
+}
+
 provider "aws" {
   region = "us-east-1"
-}
-
-resource "aws_dynamodb_table" "ai_responses" {
-  name           = "aiResponseTable"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "model_id"
-
-  attribute {
-    name = "model_id"
-    type = "S"
-  }
-}
-
-resource "aws_security_group" "ai_sg" {
-  name        = "aiAccess"
-  description = "Allow SSH and HTTP from home"
-  vpc_id      = data.aws_vpc.default.id
-
-  ingress {
-    description = "SSH from home"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["YOUR_HOME_IP/32"]
-  }
-
-  ingress {
-    description = "HTTP from home"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["YOUR_HOME_IP/32"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
 data "aws_vpc" "default" {
@@ -66,6 +31,50 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
 }
 
+resource "aws_dynamodb_table" "ai_responses" {
+  name           = "aiResponseTable-${random_id.unique_suffix.hex}"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "model_id"
+
+  attribute {
+    name = "model_id"
+    type = "S"
+  }
+}
+
+resource "random_id" "unique_suffix" {
+  byte_length = 4
+}
+
+resource "aws_security_group" "ai_sg" {
+  name        = "aiAccess-${random_id.unique_suffix.hex}"
+  description = "Allow SSH and HTTP from home"
+  vpc_id      = data.aws_vpc.default.id
+
+  ingress {
+    description = "SSH from home"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.home_ip}/32"]
+  }
+
+  ingress {
+    description = "HTTP from home"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["${var.home_ip}/32"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_instance" "ubuntu_bedrock_client" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
@@ -79,7 +88,6 @@ resource "aws_instance" "ubuntu_bedrock_client" {
     apt install -y python3-pip
     pip3 install boto3 flask
 
-    # Write script to call Bedrock (you'll need credentials via instance profile or env vars)
     cat <<PYTHON > /home/ubuntu/bedrock_query.py
 import boto3
 import json
@@ -94,7 +102,7 @@ models = [
 
 prompt = "pitch me your capabilities for creating financial plans using between 200-550 words"
 ddb = boto3.resource('dynamodb', region_name='us-east-1')
-table = ddb.Table('aiResponseTable')
+table = ddb.Table("${aws_dynamodb_table.ai_responses.name}")
 
 client = boto3.client('bedrock-runtime')
 
@@ -114,14 +122,13 @@ PYTHON
 
     python3 /home/ubuntu/bedrock_query.py
 
-    # Launch simple Flask server to serve stored data
     cat <<FLASK > /home/ubuntu/app.py
 from flask import Flask
 import boto3
 
 app = Flask(__name__)
 ddb = boto3.resource('dynamodb', region_name='us-east-1')
-table = ddb.Table('aiResponseTable')
+table = ddb.Table("${aws_dynamodb_table.ai_responses.name}")
 
 @app.route("/")
 def home():
@@ -139,7 +146,7 @@ FLASK
   EOF
 
   tags = {
-    Name = "Ubuntu-Bedrock-Client"
+    Name = "Ubuntu-Bedrock-Client-${random_id.unique_suffix.hex}"
   }
 }
 
