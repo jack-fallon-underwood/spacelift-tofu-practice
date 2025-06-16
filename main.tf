@@ -7,6 +7,10 @@ provider "aws" {
   region = "us-east-2"
 }
 
+resource "random_id" "unique_suffix" {
+  byte_length = 4
+}
+
 resource "aws_dynamodb_table" "ai_responses" {
   name = "aiResponseTable-${random_id.unique_suffix.hex}"
   billing_mode   = "PAY_PER_REQUEST"
