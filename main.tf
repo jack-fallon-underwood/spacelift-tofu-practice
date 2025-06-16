@@ -1,5 +1,5 @@
 variable "home_ip" {
-  description = "Your home IP address"
+  description = "Your home IP"
   type        = string
 }
 
