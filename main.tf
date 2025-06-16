@@ -4,7 +4,7 @@ variable "home_ip" {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-east-2"
 }
 
 data "aws_vpc" "default" {
@@ -80,7 +80,7 @@ resource "aws_instance" "ubuntu_bedrock_client" {
   instance_type          = "t3.micro"
   subnet_id              = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.ai_sg.id]
-  availability_zone = "us-east-1c" 
+  
 
 
   user_data = <<-EOF
@@ -102,7 +102,7 @@ models = [
 ]
 
 prompt = "pitch me your capabilities for creating financial plans using between 200-550 words"
-ddb = boto3.resource('dynamodb', region_name='us-east-1')
+ddb = boto3.resource('dynamodb', region_name='us-east-2')
 table = ddb.Table("${aws_dynamodb_table.ai_responses.name}")
 
 client = boto3.client('bedrock-runtime')
@@ -128,7 +128,7 @@ from flask import Flask
 import boto3
 
 app = Flask(__name__)
-ddb = boto3.resource('dynamodb', region_name='us-east-1')
+ddb = boto3.resource('dynamodb', region_name='us-east-2')
 table = ddb.Table("${aws_dynamodb_table.ai_responses.name}")
 
 @app.route("/")
