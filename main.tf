@@ -7,7 +7,7 @@ provider "aws" {
   region = "us-east-2"
 }
 
-resource "aws_dynamodb_table" "ai_responses" {
+resource "aws_dynamodb_table" "ai_responsesQ" {
   name           = "aiResponseTable"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "model_id"
@@ -18,7 +18,7 @@ resource "aws_dynamodb_table" "ai_responses" {
   }
 }
 
-resource "aws_security_group" "ai_sg" {
+resource "aws_security_group" "ai_sgQ" {
   name        = "aiAccess"
   description = "Allow SSH and HTTP from home"
   vpc_id      = data.aws_vpc.default.id
