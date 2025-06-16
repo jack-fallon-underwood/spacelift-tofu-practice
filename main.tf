@@ -76,15 +76,11 @@ resource "aws_security_group" "ai_sg" {
 }
 
 resource "aws_instance" "ubuntu_bedrock_client" {
-  ami                         = data.aws_ami.ubuntu.id
-  instance_type               = "t3.micro"
-  subnet_id                   = data.aws_subnets.default.ids[0]
-  vpc_security_group_ids      = [aws_security_group.ai_sg.id]
-  associate_public_ip_address = true
-
-
-
-}
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = "t3.micro"
+  subnet_id              = data.aws_subnets.default.ids[0]
+  vpc_security_group_ids = [aws_security_group.ai_sg.id]
+  
 
 
   user_data = <<-EOF
