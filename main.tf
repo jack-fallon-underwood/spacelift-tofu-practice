@@ -82,11 +82,8 @@ resource "aws_instance" "ubuntu_bedrock_client" {
   vpc_security_group_ids      = [aws_security_group.ai_sg.id]
   associate_public_ip_address = true
 
-  # user_data omitted for brevity
 
-  tags = {
-    Name = "Ubuntu-Bedrock-Client-${random_id.unique_suffix.hex}"
-  }
+
 }
 
 
