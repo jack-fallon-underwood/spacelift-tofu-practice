@@ -75,12 +75,50 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
 }
 
+resource "aws_iam_role" "ec2_role" {
+  name = "bedrock-dynamodb-access-${random_id.unique_suffix.hex}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "ec2_policy" {
+  name = "bedrock-dynamodb-policy-${random_id.unique_suffix.hex}"
+  role = aws_iam_role.ec2_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = ["bedrock:*", "dynamodb:*"],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "bedrock-instance-profile-${random_id.unique_suffix.hex}"
+  role = aws_iam_role.ec2_role.name
+}
+
+
 resource "aws_instance" "ubuntu_bedrock_client" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
   subnet_id              = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.ai_sg.id]
  
+  iam_instance_profile   = aws_iam_instance_profile.ec2_instance_profile.name
 
   user_data = <<-EOF
     #!/bin/bash
@@ -103,7 +141,7 @@ models = [
 
 prompt = "pitch me your capabilities for creating financial plans using between 200-550 words"
 ddb = boto3.resource('dynamodb', region_name='us-east-2')
-table = ddb.Table('aiResponseTable')
+table = ddb.Table("${aws_dynamodb_table.ai_responses.name}")
 
 client = boto3.client('bedrock-runtime')
 
@@ -130,7 +168,7 @@ import boto3
 
 app = Flask(__name__)
 ddb = boto3.resource('dynamodb', region_name='us-east-2')
-table = ddb.Table('aiResponseTable')
+table = ddb.Table("${aws_dynamodb_table.ai_responses.name}")
 
 @app.route("/")
 def home():
@@ -139,6 +177,11 @@ def home():
     for item in items:
         html += f"<h2>{item['model_id']}</h2><p>{item['response']}</p><hr>"
     return html
+
+@app.route("/logs")
+def logs():
+    with open("/home/ubuntu/bedrock.log") as f:
+        return "<pre>" + f.read() + "</pre>"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)
