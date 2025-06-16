@@ -4,7 +4,7 @@ variable "home_ip" {
 }
 
 provider "aws" {
-  region = "us-east-2"
+  region = "us-east-1"
 }
 
 resource "aws_dynamodb_table" "ai_responses" {
@@ -98,7 +98,7 @@ models = [
 ]
 
 prompt = "pitch me your capabilities for creating financial plans using between 200-550 words"
-ddb = boto3.resource('dynamodb', region_name='us-east-2')
+ddb = boto3.resource('dynamodb', region_name='us-east-1')
 table = ddb.Table('aiResponseTable')
 
 client = boto3.client('bedrock-runtime')
@@ -125,7 +125,7 @@ from flask import Flask
 import boto3
 
 app = Flask(__name__)
-ddb = boto3.resource('dynamodb', region_name='us-east-2')
+ddb = boto3.resource('dynamodb', region_name='us-east-1')
 table = ddb.Table('aiResponseTable')
 
 @app.route("/")
